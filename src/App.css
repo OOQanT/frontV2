@@ -36,3 +36,39 @@
     transform: rotate(360deg);
   }
 }
+
+/* .main-bg{
+  height: 390px;
+  width: 100%;
+  background-image: url('../public/img/fern-1250903_1280.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+} */
+
+.banner-container {
+  position: relative;
+  width: 100%;
+}
+
+.banner-container img {
+  height: 300px;
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.banner-button {
+  position: absolute;
+  top: 50%;
+  left: 10px; /* 왼쪽 여백 설정 */
+  transform: translateY(-50%);
+  padding: 10px 20px;
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 25px; /* 글씨 크기 조정 */
+  font-weight: bold; /* 글씨 두껍게 설정 */
+  cursor: pointer;
+}
