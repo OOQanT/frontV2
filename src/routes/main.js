@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -12,16 +12,32 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Main(){
+    const navigate = useNavigate();
 
-    // const Item = styled(Paper)(({ theme }) => ({
-    //     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    //     ...theme.typography.body2,
-    //     padding: theme.spacing(2),
-    //     textAlign: 'center',
-    //     color: theme.palette.text.secondary,
-    //   }));
+    let [itemname,setItemname] = useState('');
+
+    function getItems(itemname){
+        axios.get('http://localhost:8080/item/getItemsPaging',{
+            params:{
+                itemName : itemname
+            }
+        })
+        .then((response)=>{
+            console.log(response.data);
+        })
+        .catch((e)=>{
+            console.log(e.message);
+        })
+        
+    }
+
+    useEffect(()=>{
+        getItems(itemname);
+    },[])
 
     return(
         <div>
@@ -34,7 +50,9 @@ function Main(){
             <Container fixed>
                 <Grid container spacing={2} style={{marginTop:'3px',justifyContent: 'center', alignItems: 'center' }}>
                     <Grid item xs={8}>
-                        <TextField fullWidth label="상품 검색" id="fullWidth" />
+                        <TextField fullWidth label="상품 검색" id="fullWidth" onChange={(e)=>{
+                            setItemname(e.target.value);
+                        }}/>
                     </Grid>
                     <Grid item xs={2}>
                         <Button variant="contained" style={{ height: '55px' }}>검색</Button>
