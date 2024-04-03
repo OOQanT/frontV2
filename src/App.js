@@ -24,19 +24,29 @@ import Cart from './routes/Cart';
 import Order from './routes/Order';
 
 import jwt_decode from 'jwt-decode';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import {Routes, Route, Link, useNavigate} from 'react-router-dom'
-
+import Logout from './modules/logout';
+import { setUser } from './modules/store';
+import { jwtDecode } from 'jwt-decode';
 
 function App() {
 
-  // let user = useSelector((state)=>{
-  //   return state.user;
-  // })
-  // console.log(user);
-
+  let user = useSelector((state)=>{
+    return state;
+  })
+  const dispatch = useDispatch();
   let navigate = useNavigate();
+
+  const accessToken = localStorage.getItem('access');
+  useEffect(()=>{
+    if(accessToken){
+      let {username, nickname, role} = jwtDecode(accessToken);
+      let userData = {username : username, nickname:nickname, role:role};
+      dispatch(setUser(userData));
+    }
+  },[dispatch])
 
   return (
     <div>
@@ -49,12 +59,24 @@ function App() {
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{ color: '#000000' }}>
                   Shop
                 </Typography>
-                <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
-                  navigate('/login')
-                }}>Login</Button>     
-                <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
-                  navigate('/join')
-                }}>Join</Button> 
+                {
+                  user.user.username ? <Button color="inherit" style={{ color: '#000000' }} disabled>Hello {user.user.nickname}</Button>   :
+                  <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
+                    navigate('/login')
+                  }}>Login</Button>   
+                }
+
+                {
+                  user.user.username ? <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
+                    Logout();
+                    dispatch(setUser({username: '', nickanme: '', role: ''}))
+                  }}>logout</Button>  :
+                  <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
+                    navigate('/join')
+                  }}>Join</Button> 
+                }
+                
+                
         </Toolbar> 
       </AppBar>
 

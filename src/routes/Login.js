@@ -10,13 +10,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { setUser } from '../modules/store';
+import { useNavigate } from 'react-router-dom';
+
 
 function Login(){
 
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     let user = useSelector((state)=>{
         return state;
     })
-    let dispatch = useDispatch();
+    
 
     let [username,setUsername] = useState('');
     let [password,setPassword] = useState('');
@@ -39,6 +43,7 @@ function Login(){
 
     return(
         <div>
+
             <React.Fragment>
                 <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title"aria-describedby="alert-dialog-description">
                     <DialogTitle id="alert-dialog-title">
@@ -60,6 +65,7 @@ function Login(){
                 </div>
                 <div>
                     <TextField type='password' label="password" style={{ width: '400px' }} onChange={(e)=>{
+                        setIsPassword(false);
                         setPassword(e.target.value);
                     }}/>
                 </div>
@@ -89,25 +95,24 @@ function Login(){
         formData.append('username', username);
         formData.append('password', password);
 
-        axios.post('http://localhost:8080/login',formData)
+        axios.post('http://localhost:8080/login',formData,{
+            withCredentials: true
+        })
         .then((response)=>{
-            console.log(response);
+
             const accessToken = response.headers['access'];
         
             window.localStorage.setItem('access',accessToken);
-        })
-        .then(()=>{
-            let token = localStorage.getItem('access');
-            const decodedToken = jwtDecode(token);
+
+            const decodedToken = jwtDecode(accessToken);
             let {username , nickname, role} = decodedToken;
             let userData = {username : username, nickname : nickname , role : role};
-            
-            console.log(userData);
-
             dispatch(setUser(userData));
-            console.log(user.user);
 
-            //window.location.replace("/");
+            console.log(user.user)
+        })
+        .then(()=>{
+            navigate('/');
         })
         .catch((e)=>{
             console.log(e.message);
