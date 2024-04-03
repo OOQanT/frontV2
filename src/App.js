@@ -23,65 +23,18 @@ import Product from './routes/product';
 import Cart from './routes/Cart';
 import Order from './routes/Order';
 
+import jwt_decode from 'jwt-decode';
+import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import {Routes, Route, Link, useNavigate} from 'react-router-dom'
 
 
-
-function Header(){
-  return(
-    <header>
-      <h1>Welcome</h1>
-    </header>
-  )
-}
-
-function Nav(){
-  return(
-    <nav>
-      <ol>
-        <li>html</li>
-        <li>css</li>
-      </ol>
-    </nav>
-  )
-}
-
-function Article(){
-  let [open,setOpen] = useState(false);
-  return(
-    <article>
-      <h2>Welcome</h2>
-      Hello web!
-      <br/>
-      <br/>
-
-      <ButtonGroup>
-        <Button variant="contained" onClick={()=>{
-          setOpen(true)
-        }}>Create</Button>
-        <Button variant="contained">Update</Button>
-        <Button variant="contained">Delete</Button>
-      </ButtonGroup>
-
-      <Dialog open={open}>
-        <DialogTitle>create</DialogTitle>
-        <DialogContentText>
-          Hello Create
-        </DialogContentText>
-        <DialogActions>
-          <Button variant="contained">Create</Button>
-          <Button variant="contained" onClick={()=>{
-            setOpen(false);
-          }}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
-
-    </article>
-  )
-}
-
 function App() {
+
+  // let user = useSelector((state)=>{
+  //   return state.user;
+  // })
+  // console.log(user);
 
   let navigate = useNavigate();
 
