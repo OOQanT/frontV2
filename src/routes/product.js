@@ -3,8 +3,11 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 function Product(){
+
+    const {id} = useParams();
 
     let [quantity,setQuantity] = useState(1);
 
@@ -21,7 +24,7 @@ function Product(){
             <Container fixed container spacing={2} style={{marginTop:'30px'}}>
             <Grid container spacing={2}>
                 <Grid item xs={6}>
-                   <img src='img/default_item_image.png' style={{width:'500px'}}/>
+                   <img src='/img/default_item_image.png' style={{width:'500px'}}/>
                 </Grid>
 
                 <Grid item xs={6}>

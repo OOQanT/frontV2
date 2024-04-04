@@ -22,8 +22,11 @@ import Login from './routes/Login';
 import Product from './routes/product';
 import Cart from './routes/Cart';
 import Order from './routes/Order';
+import ProductForm from './routes/ProductForm';
+import ProductFormModal from './routes/ProductFormModal';
 
 import jwt_decode from 'jwt-decode';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import {Routes, Route, Link, useNavigate} from 'react-router-dom'
@@ -39,19 +42,14 @@ function App() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
 
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
+
   let accessToken = localStorage.getItem('access');
   useEffect(()=>{
-    // if(accessToken){
-    //   let {username, nickname, role} = jwtDecode(accessToken);
-    //   let userData = {username : username, nickname:nickname, role:role};
-    //   dispatch(setUser(userData));
-    // }
-
     const checkTokenValidity = async () => {
       if (accessToken) {
         try {
-          // Axios를 사용하여 토큰 유효성 검사 요청을 보냅니다.
-          await axios.get('/api/token/validate', {
+          await axios.get('http://localhost:8080/api/token/validate', {
             headers: {
               'access': accessToken
             }
@@ -66,6 +64,8 @@ function App() {
           // 로컬 스토리지에서 토큰을 제거하고 사용자 상태를 초기화합니다.
           localStorage.removeItem('access');
           dispatch(setUser({username: '', nickname: '', role: ''}));
+
+          //다시 토큰을 발급하는 로직
         }
       }
     };
@@ -78,12 +78,37 @@ function App() {
 
       <AppBar position="static" sx={{ backgroundColor: '#ffffff' }}>
         <Toolbar>
-         <IconButton size="large"edge="start"color="inherit"aria-label="menu"sx={{ mr: 2 }}  >
-         
+                <IconButton size="large"edge="start"color="inherit"aria-label="menu"sx={{ mr: 2 }} disabled >
+                  
                 </IconButton>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{ color: '#000000' }}>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} style={{ color: '#000000' }} onClick={()=>{
+                  navigate('/');
+                }}>
                   Shop
                 </Typography>
+
+                {
+                  user.user.username ?
+                  <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
+
+                    setIsModalOpen(true)
+                    console.log(isModalOpen);
+                    
+                  }}> 상품등록 </Button> 
+                  : null
+                }
+                {
+                  user.user.username ? 
+                  <Button color="inherit" style={{ color: '#000000' }} > 주문목록 </Button>
+                  : null
+                }
+
+                {
+                  user.user.username ? 
+                  <Button color="inherit" style={{ color: '#000000' }} > 장바구니 </Button>
+                  : null
+                }
+
                 {
                   user.user.username ? <Button color="inherit" style={{ color: '#000000' }} disabled>Hello {user.user.nickname}</Button>   :
                   <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
@@ -110,10 +135,16 @@ function App() {
         <Route path='/' element={<Main></Main>}/>
         <Route path='/join' element={<Join></Join>}/>
         <Route path='/login' element={<Login/>}/>
-        <Route path='/product' element={<Product/>}/>
+        <Route path='/product/:id' element={<Product/>}/>
         <Route path='/cart' element={<Cart/>} />
         <Route path='/order' element={<Order/>}/>
+        <Route path='/ProductForm' element={<ProductForm/>} />
+        
       </Routes>
+
+      <ProductFormModal isOpen={isModalOpen} onClose={()=>{
+        setIsModalOpen(false);
+      }} />
       
     </div>
     
