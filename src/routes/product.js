@@ -2,6 +2,12 @@ import { Button, Container, Grid, Paper, TextField, styled} from '@mui/material'
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -11,13 +17,11 @@ function Product(){
 
     let [quantity,setQuantity] = useState(1);
 
-    const Item = styled(Paper)(({ theme }) => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-        ...theme.typography.body2,
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-      }));
+    const [value, setValue] = React.useState('1');
+
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
 
     return(
         <div>
@@ -56,7 +60,22 @@ function Product(){
                     <Button variant="contained" style={{ display: 'block', margin: '0 auto' }}>장바구니</Button>
                     </Grid>
             </Grid>
-            <hr/>
+            
+            <Box sx={{ width: '100%', typography: 'body1' }}>
+                <TabContext value={value}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <TabList onChange={handleChange} aria-label="lab API tabs example">
+                        <Tab label="상품 상세" value="1" />
+                        <Tab label="상품 후기" value="2" />
+                        <Tab label="Q&A" value="3" />
+                    </TabList>
+                    </Box>
+                    <TabPanel value="1">상품 상세</TabPanel>
+                    <TabPanel value="2">상품 후기</TabPanel>
+                    <TabPanel value="3">QnA</TabPanel>
+                </TabContext>
+            </Box>
+
             </Container>
             
         </div>

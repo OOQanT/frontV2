@@ -24,6 +24,7 @@ import Cart from './routes/Cart';
 import Order from './routes/Order';
 import ProductForm from './routes/ProductForm';
 import ProductFormModal from './routes/ProductFormModal';
+import ProductV2 from './routes/ProdictV2';
 
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
@@ -105,7 +106,7 @@ function App() {
 
                 {
                   user.user.username ? 
-                  <Button color="inherit" style={{ color: '#000000' }} > 장바구니 </Button>
+                  <Button color="inherit" style={{ color: '#000000', marginRight:'50px' }} > 장바구니 </Button>
                   : null
                 }
 
@@ -140,6 +141,7 @@ function App() {
         <Route path='/order' element={<Order/>}/>
         <Route path='/ProductForm' element={<ProductForm/>} />
         
+        <Route path='/ProductV2' element={<ProductV2/>} />
       </Routes>
 
       <ProductFormModal isOpen={isModalOpen} onClose={()=>{

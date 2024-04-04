@@ -18,6 +18,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -96,9 +98,9 @@ function Main(){
             </div>
 
             <Container fixed>
-                <Grid container spacing={2} style={{marginTop:'3px',justifyContent: 'center', alignItems: 'center' }}>
+                <Grid container spacing={2} style={{marginTop:'3px',justifyContent: 'center', alignItems: 'center', marginLeft: '30px' }}>
                     <Grid item xs={8}>
-                        <TextField fullWidth label="상품 검색" id="fullWidth" onChange={(e)=>{
+                        <TextField fullWidth label="상품 검색" id="fullWidth"  onChange={(e)=>{
                             setItemname(e.target.value);
                         }}/>
                     </Grid>
@@ -112,39 +114,49 @@ function Main(){
                 </Grid>
             </Container>
 
-            <Container fixed  maxWidth="lg" style={{marginTop:'15px', marginBottom:'15px'}}>
-                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    {items.map((data, index) => (
-                    <Grid item xs={2} sm={4} md={4} key={index}>
+            {
+                items ?
+                <>
+                    <Container fixed  maxWidth="lg" style={{marginTop:'15px', marginBottom:'45px'}}>
+                        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                            {items.map((data, index) => (
+                            <Grid item xs={2} sm={4} md={4} key={index}>
 
-                    <Card sx={{ maxWidth: 345 }} onClick={()=>{
-                        navigate(`product/${data.id}`)
-                    }}>
-                        <CardActionArea>
-                            {
-                                data.storeFilename ? <CardMedia component="img" height="140" image={`http://localhost:8080/item/itemimages/${data.storeFilename[0]}`} alt="green iguana"/> :
-                                <CardMedia component="img" height="140" image="img/default_item_image.png" alt="green iguana"/>
+                            <Card sx={{ maxWidth: 345 }} onClick={()=>{
+                                navigate(`product/${data.id}`)
+                            }}>
+                                <CardActionArea>
+                                    {
+                                        data.storeFilename ? <CardMedia component="img" height="140" image={`http://localhost:8080/item/itemimages/${data.storeFilename[0]}`} alt="green iguana"/> :
+                                        <CardMedia component="img" height="140" image="img/default_item_image.png" alt="green iguana"/>
 
-                            }
-                            {/* <CardMedia component="img" height="140" image="img/default_item_image.png" alt="green iguana"/> */}
-                            <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">{data.itemName}</Typography>
-                            <Typography variant="body2" color="text.secondary" component="div">
-                                {data.description}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold' }}>{data.price}원</Typography>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
+                                    }
+                                    {/* <CardMedia component="img" height="140" image="img/default_item_image.png" alt="green iguana"/> */}
+                                    <CardContent>
+                                    <Typography gutterBottom variant="h5" component="div">{data.itemName}</Typography>
+                                    <Typography variant="body2" color="text.secondary" component="div">
+                                        {data.description}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold' }}>{data.price}원</Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Card>
 
-                    </Grid>
-                    ))}
-                </Grid>
-            </Container>
+                            </Grid>
+                            ))}
+                        </Grid>
+                    </Container>
             
-            <Stack spacing={2} style={{marginTop:'3px',marginRight:'30px',justifyContent: 'center', alignItems: 'center' }}>
-                <Pagination count={totalPages} page={currentPage}  onChange={handlePageChange} shape="rounded" />
-            </Stack>
+                    <Stack spacing={2} style={{marginTop:'3px',marginRight:'30px',justifyContent: 'center', alignItems: 'center' }}>
+                        <Pagination count={totalPages} page={currentPage}  onChange={handlePageChange} shape="rounded" />
+                    </Stack>
+                </>
+                :
+                <Box sx={{ display: 'flex' }}>
+                    <CircularProgress />
+                </Box>
+            }
+            
         </div>
     )
 }
