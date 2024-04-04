@@ -39,13 +39,38 @@ function App() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
 
-  const accessToken = localStorage.getItem('access');
+  let accessToken = localStorage.getItem('access');
   useEffect(()=>{
-    if(accessToken){
-      let {username, nickname, role} = jwtDecode(accessToken);
-      let userData = {username : username, nickname:nickname, role:role};
-      dispatch(setUser(userData));
-    }
+    // if(accessToken){
+    //   let {username, nickname, role} = jwtDecode(accessToken);
+    //   let userData = {username : username, nickname:nickname, role:role};
+    //   dispatch(setUser(userData));
+    // }
+
+    const checkTokenValidity = async () => {
+      if (accessToken) {
+        try {
+          // Axios를 사용하여 토큰 유효성 검사 요청을 보냅니다.
+          await axios.get('/api/token/validate', {
+            headers: {
+              'access': accessToken
+            }
+          });
+
+          // 응답이 성공적이라면, 토큰이 유효합니다. 사용자 상태를 업데이트합니다.
+          let {username, nickname, role} = jwtDecode(accessToken);
+          let userData = {username: username, nickname: nickname, role: role};
+          dispatch(setUser(userData));
+        } catch (error) {
+          // 토큰이 유효하지 않거나 요청에 실패했습니다.
+          // 로컬 스토리지에서 토큰을 제거하고 사용자 상태를 초기화합니다.
+          localStorage.removeItem('access');
+          dispatch(setUser({username: '', nickname: '', role: ''}));
+        }
+      }
+    };
+
+    checkTokenValidity();
   },[dispatch])
 
   return (

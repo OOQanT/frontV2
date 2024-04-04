@@ -20,24 +20,36 @@ function Main(){
 
     let [itemname,setItemname] = useState('');
 
-    function getItems(itemname){
+    let [items,setItems] = useState([]);
+    let [totalPages,setTotalPages] = useState();
+    let [currentPage,setCurrentPage] = useState(1);
+
+    function getItems(itemname, pageNumber){
         axios.get('http://localhost:8080/item/getItemsPaging',{
             params:{
-                itemName : itemname
+                itemName : itemname,
+                page : pageNumber,
             }
         })
         .then((response)=>{
             console.log(response.data);
+            setItems(response.data.content);
+            setTotalPages(response.data.totalPages);
         })
         .catch((e)=>{
             console.log(e.message);
         })
         
     }
+    
 
     useEffect(()=>{
-        getItems(itemname);
-    },[])
+        getItems(itemname, currentPage);
+    },[currentPage])
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value); // 선택된 페이지 번호로 상태 업데이트
+    };       
 
     return(
         <div>
@@ -55,35 +67,30 @@ function Main(){
                         }}/>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button variant="contained" style={{ height: '55px' }}>검색</Button>
+                        <Button variant="contained" style={{ height: '55px' }} onClick={()=>{
+                            console.log(items);
+                        }}>검색</Button>
                     </Grid>
                 </Grid>
             </Container>
 
             <Container fixed  maxWidth="lg" style={{marginTop:'15px', marginBottom:'15px'}}>
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    {Array.from(Array(9)).map((_, index) => (
+                    {items.map((data, index) => (
                     <Grid item xs={2} sm={4} md={4} key={index}>
 
                     <Card sx={{ maxWidth: 345 }}>
                         <CardActionArea>
-                            <CardMedia
-                            component="img"
-                            height="140"
-                            image="img/default_item_image.png"
-                            alt="green iguana"
-                            />
+                            <CardMedia component="img" height="140" image="img/default_item_image.png" alt="green iguana"/>
                             <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                Lizard
+                            <Typography gutterBottom variant="h5" component="div">{data.itemName}</Typography>
+                            <Typography variant="body2" color="text.secondary" component="div">
+                                {data.description}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Lizards are a widespread group of squamate reptiles, with over 6,000
-                                species, ranging across all continents except Antarctica
-                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold' }}>{data.price}원</Typography>
                             </CardContent>
                         </CardActionArea>
-                        </Card>
+                    </Card>
 
                     </Grid>
                     ))}
@@ -91,9 +98,8 @@ function Main(){
             </Container>
             
             <Stack spacing={2} style={{marginTop:'3px',marginRight:'30px',justifyContent: 'center', alignItems: 'center' }}>
-                <Pagination count={10} shape="rounded" />
+                <Pagination count={totalPages} page={currentPage}  onChange={handlePageChange} shape="rounded" />
             </Stack>
-
         </div>
     )
 }
