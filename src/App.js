@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import TextField from '@mui/material/TextField';
+import { Box } from '@mui/material';
 
 import Main from './routes/main';
 import Join from './routes/Join';
@@ -25,12 +26,13 @@ import Order from './routes/Order';
 import ProductForm from './routes/ProductForm';
 import ProductFormModal from './routes/ProductFormModal';
 import ProductV2 from './routes/ProdictV2';
+import OrderInfo from './routes/OrderInfo';
 
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import {Routes, Route, Link, useNavigate} from 'react-router-dom'
+import {Routes, Route, Link, useNavigate, BrowserRouter} from 'react-router-dom'
 import Logout from './modules/logout';
 import { setUser } from './modules/store';
 import { jwtDecode } from 'jwt-decode';
@@ -72,7 +74,7 @@ function App() {
     };
 
     checkTokenValidity();
-  },[dispatch])
+  },[navigate,dispatch])
 
   return (
     <div>
@@ -100,13 +102,17 @@ function App() {
                 }
                 {
                   user.user.username ? 
-                  <Button color="inherit" style={{ color: '#000000' }} > 주문목록 </Button>
+                  <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
+                    navigate('/order')
+                  }}> 주문목록 </Button>
                   : null
                 }
 
                 {
                   user.user.username ? 
-                  <Button color="inherit" style={{ color: '#000000', marginRight:'50px' }} > 장바구니 </Button>
+                  <Button color="inherit" style={{ color: '#000000', marginRight:'50px' }} onClick={()=>{
+                    navigate('/cart')
+                  }}> 장바구니 </Button>
                   : null
                 }
 
@@ -121,6 +127,7 @@ function App() {
                   user.user.username ? <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
                     Logout();
                     dispatch(setUser({username: '', nickanme: '', role: ''}))
+                    navigate('/');
                   }}>logout</Button>  :
                   <Button color="inherit" style={{ color: '#000000' }} onClick={()=>{
                     navigate('/join')
@@ -132,22 +139,50 @@ function App() {
       </AppBar>
 
       
-      <Routes>
-        <Route path='/' element={<Main></Main>}/>
-        <Route path='/join' element={<Join></Join>}/>
-        <Route path='/login' element={<Login/>}/>
-        <Route path='/product/:id' element={<Product/>}/>
-        <Route path='/cart' element={<Cart/>} />
-        <Route path='/order' element={<Order/>}/>
-        <Route path='/ProductForm' element={<ProductForm/>} />
-        
-        <Route path='/ProductV2' element={<ProductV2/>} />
-      </Routes>
+        <Routes>
+          <Route path='/' element={<Main></Main>}/>
+          <Route path='/join' element={<Join></Join>}/>
+          <Route path='/login' element={<Login/>}/>
+          <Route path='/product/:id' element={<Product/>}/>
+          <Route path='/cart' element={<Cart/>} />
+          <Route path='/order' element={<Order/>}/>
+          <Route path='/ProductForm' element={<ProductForm/>} />
+          <Route path='/OrderInfo' element={<OrderInfo/>} />
+          
+          <Route path='/ProductV2' element={<ProductV2/>} />
+        </Routes>
+      
 
       <ProductFormModal isOpen={isModalOpen} onClose={()=>{
         setIsModalOpen(false);
       }} />
       
+
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          backgroundColor: (theme) =>
+            theme.palette.mode === "light"
+              ? theme.palette.grey[200]
+              : theme.palette.grey[800],
+          p: 6,
+        }}
+        component="footer"
+      >
+        <Container maxWidth="sm">
+          <Typography variant="body2" color="text.secondary" align="center" style={{marginRight:'70px'}}>
+            {"Copyright © "}
+            <a href="http://www.mndsystem.com/" style={{ color: 'inherit', textDecoration: 'none' }}>
+              MnDSystem
+            </a>{" "}
+            {new Date().getFullYear()}
+            {"."}
+          </Typography>
+        </Container>
+      </Box>
     </div>
     
   );

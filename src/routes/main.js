@@ -117,7 +117,7 @@ function Main(){
             {
                 items ?
                 <>
-                    <Container fixed  maxWidth="lg" style={{marginTop:'15px', marginBottom:'45px'}}>
+                    <Container fixed  maxWidth="lg" style={{marginTop:'15px', marginBottom:'30px'}}>
                         <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                             {items.map((data, index) => (
                             <Grid item xs={2} sm={4} md={4} key={index}>
@@ -147,12 +147,12 @@ function Main(){
                         </Grid>
                     </Container>
             
-                    <Stack spacing={2} style={{marginTop:'3px',marginRight:'30px',justifyContent: 'center', alignItems: 'center' }}>
-                        <Pagination count={totalPages} page={currentPage}  onChange={handlePageChange} shape="rounded" />
+                    <Stack spacing={2} style={{ marginTop: '3px', marginRight: '30px', justifyContent: 'center', alignItems: 'center', marginBottom: '8em' }}>
+                        <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} shape="rounded" />
                     </Stack>
                 </>
                 :
-                <Box sx={{ display: 'flex' }}>
+                <Box sx={{display: 'flex', justifyContent: 'center',  alignItems: 'center',  marginTop : '30%' }}>
                     <CircularProgress />
                 </Box>
             }
