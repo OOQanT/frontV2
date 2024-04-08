@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // 이메일・전화번호와 같이 유추가 가능한 값은 안전하지 않습니다.
 const random = new Date().getTime() + Math.random();
 
-const widgetClientKey = "test_ck_ma60RZblrqYqgxBOQLnMrwzYWBn1";
+const widgetClientKey = ''
 const customerKey = "order_"+random;
 
 
