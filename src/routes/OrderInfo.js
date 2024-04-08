@@ -2,12 +2,14 @@
 import { TextField, Button, Dialog, DialogTitle, Container, Box } from '@mui/material';
 
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import DaumPostcode from 'react-daum-postcode';
 import axios from 'axios';
 
+
 function OrderInfo(){
 
+    const navigate = useNavigate();
     const location = useLocation();
     const data = location.state?.data ?? 'No data';
     const totalPrice = location.state?.totalPrice ?? 'No total price';
@@ -15,9 +17,26 @@ function OrderInfo(){
     console.log(data);
     console.log(totalPrice);
 
+    const handleButtonClick = () => {
+      // 이벤트 핸들러 내에서 navigate 함수 사용
+      const dataToSend = {
+        item: data,
+        totalPrice: totalPrice,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        postcode: formData.postcode,
+        address: formData.address,
+        detailAddress: formData.detailAddress,
+        deliveryMessage: formData.deliveryMessage
+      };
+      
+      navigate('/toss', { state: dataToSend });
+    };
+
     const [validation, setValidation] = useState({
       recipientNameValid: true,
       phoneNumberValid: true,
+      emailValid:true,
       postcodeValid: true,
       addressValid: true,
       detailAddressValid: true,
@@ -25,10 +44,11 @@ function OrderInfo(){
     });
 
     const handlePaymentClick = () => {
-      const { recipientName, phoneNumber, postcode, address, detailAddress, deliveryMessage } = formData;
+      const { recipientName, phoneNumber, email, postcode, address, detailAddress, deliveryMessage } = formData;
       const newValidation = {
         recipientNameValid: !!recipientName,
         phoneNumberValid: !!phoneNumber,
+        emailValid: !!email,
         postcodeValid: !!postcode,
         addressValid: !!address,
         detailAddressValid: !!detailAddress,
@@ -53,6 +73,7 @@ function OrderInfo(){
     const [formData, setFormData] = useState({
         recipientName: '',
         phoneNumber: '',
+        email:'',
         postcode: '',
         address: '',
         detailAddress: '',
@@ -89,8 +110,7 @@ function OrderInfo(){
             }
         })
         .then((action)=>{
-            alert('상품이 주문되었습니다.')
-            window.location.replace('/');
+          handleButtonClick();
         })
         .catch((error)=>{
             console.log(error.response);
@@ -100,88 +120,6 @@ function OrderInfo(){
             }
         })
     }
-
-    useEffect(() => {
-      const jquery = document.createElement("script");
-      jquery.src = "http://code.jquery.com/jquery-1.12.4.min.js";
-      const iamport = document.createElement("script");
-      iamport.src = "http://cdn.iamport.kr/js/iamport.payment-1.1.7.js";
-      document.head.appendChild(jquery);
-      document.head.appendChild(iamport);
-      return () => {
-        document.head.removeChild(jquery);
-        document.head.removeChild(iamport);
-      };
-    }, []);
-
-    // const requestPay = () => {
-    //   const { IMP } = window;
-    //   IMP.init('imp03727886');
-  
-    //   IMP.request_pay({
-    //     pg: 'toss_brandpay.imp03727886',
-    //     pay_method: 'card',
-    //     merchant_uid: new Date().getTime(),
-    //     name: '테스트 상품',
-    //     amount: 1004,
-    //     buyer_email: 'bomin5238@naver.com',
-    //     buyer_name: '장보민',
-    //     buyer_tel: '010-7307-3466',
-    //     buyer_addr: '서울특별시',
-    //     buyer_postcode: '123-456',
-    //   }, async (rsp) => {
-    //     try {
-    //       const { data } = await axios.post('http://localhost:8080/verifyIamport/' + rsp.imp_uid);
-    //       if (rsp.paid_amount === data.response.amount) {
-    //         alert('결제 성공');
-    //       } else {
-    //         alert('결제 실패');
-    //       }
-    //     } catch (error) {
-    //       console.error('Error while verifying payment:', error);
-    //       alert('결제 실패');
-    //     }
-    //   });
-    // };
-
-    function onClickPayment() {
-      /* 1. 가맹점 식별하기 */
-      const { IMP } = window;
-      IMP.init('고유인식번호');
-  
-      /* 2. 결제 데이터 정의하기 */
-      const data = {
-        pg: 'html5_inicis',                           
-        pay_method: 'card',                          
-        merchant_uid: `mid_${new Date().getTime()}`,
-        amount: 1000,                                 
-        name: '테스트 상품',                  
-        buyer_name: '주문자',                           
-        buyer_tel: '전화번호',                     
-        buyer_email: '주문자메일',               
-        buyer_addr: '신사동 661-16',                    
-        buyer_postcode: '06018',                     
-      };
-  
-      /* 4. 결제 창 호출하기 */
-      IMP.request_pay(data, callback);
-    }
-
-    function callback(response) {
-      const {
-        success,
-        merchant_uid,
-        error_msg,
-      } = response;
-  
-      if (success) {
-        alert('결제 성공');
-      } else {
-        alert(`결제 실패: ${error_msg}`);
-        console.log(response);
-      }
-    }
-  
 
     return(
         <div>
@@ -194,7 +132,10 @@ function OrderInfo(){
                     {!validation.recipientNameValid && <p style={{ color: 'red', fontSize: '13px' }}>*수령자 이름을 입력해주세요</p>}
                     
                     <TextField fullWidth label="전화번호" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} margin="normal" />
-                    {!validation.recipientNameValid && <p style={{ color: 'red', fontSize: '13px' }}>*전화번호 이름을 입력해주세요</p>}
+                    {!validation.recipientNameValid && <p style={{ color: 'red', fontSize: '13px' }}>*전화번호를 입력해주세요</p>}
+
+                    <TextField fullWidth label="이메일" name="email" value={formData.email} onChange={handleChange} margin="normal" />
+                    {!validation.recipientNameValid && <p style={{ color: 'red', fontSize: '13px' }}>* 이메일을 입력해주세요</p>}
                     
                 {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end' }}> */}
                 <TextField label="우편번호" name="postcode" value={formData.postcode} onChange={handleChange} margin="normal" sx={{ width: '75%' }} InputProps={{ readOnly: true, }}/>
@@ -216,8 +157,9 @@ function OrderInfo(){
                       } </p>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span>결제 금액 : <span style={{ fontWeight: 'bold', color: '#1976d2' }}>{totalPrice}</span> 원</span>
-                      <Button style={{ textAlign: 'right' }} onClick={handlePaymentClick}>결제</Button>
-                      <Button onClick={onClickPayment}>결제test</Button>
+                      <Button style={{ textAlign: 'right' }} onClick={()=>{
+                        create_order();
+                      }}>결제</Button>
                     </div>
                 </Box>
                 <Dialog open={openAddressDialog} onClose={() => setOpenAddressDialog(false)} aria-labelledby="address-search-title" aria-describedby="address-search-description"  sx={{

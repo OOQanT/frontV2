@@ -27,6 +27,9 @@ import ProductForm from './routes/ProductForm';
 import ProductFormModal from './routes/ProductFormModal';
 import ProductV2 from './routes/ProdictV2';
 import OrderInfo from './routes/OrderInfo';
+import { CheckoutPage } from './routes/tosspay';
+import { SuccessPage } from './routes/pay_ok';
+import { FailPage } from './routes/pay_fail';
 
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
@@ -36,6 +39,7 @@ import {Routes, Route, Link, useNavigate, BrowserRouter} from 'react-router-dom'
 import Logout from './modules/logout';
 import { setUser } from './modules/store';
 import { jwtDecode } from 'jwt-decode';
+
 
 function App() {
 
@@ -148,6 +152,10 @@ function App() {
           <Route path='/order' element={<Order/>}/>
           <Route path='/ProductForm' element={<ProductForm/>} />
           <Route path='/OrderInfo' element={<OrderInfo/>} />
+
+          <Route path='/toss' element={<CheckoutPage/>} />
+          <Route path='/success' element={<SuccessPage/>}/>
+          <Route path='/fail' element={<FailPage/>}/>
           
           <Route path='/ProductV2' element={<ProductV2/>} />
         </Routes>
